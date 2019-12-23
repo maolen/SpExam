@@ -22,6 +22,7 @@ namespace SpExam
     public partial class MainWindow : Window
     {
         private const int END_INTERVAL = 1000;
+        private Task Result { get; set; }
         private StringBuilder NumberString { get; set; } = new StringBuilder();
         public MainWindow()
         {
@@ -48,31 +49,22 @@ namespace SpExam
             }
         }
 
-        private async Task ProcessWriting()
-        {
-            var result = Task.WhenAll(WriteToDatabaseAsync(), WriteToFileAsync());
-            try
-            {
-                await result;
-            }
-            catch
-            {
-                MessageBox.Show("Ошибка записи в файл или в базу данных");
-            }
-            if (result.Status == TaskStatus.RanToCompletion)
-            {
-                MessageBox.Show("Успешно записано в файл и в базу данных");
-            }
-            else if (result.Status == TaskStatus.Faulted)
-            {
-                MessageBox.Show("Ошибка записи в файл или в базу данных");
-            }
-        }
-        private void StartCount(object sender, RoutedEventArgs e)
+        private async void StartCount(object sender, RoutedEventArgs e)
         {
             startButton.IsEnabled = false;
             Parallel.For(0, END_INTERVAL, index => NumberString.Append($"Дата создания - {DateTime.Now}\n{index.ToString()} "));
             MessageBox.Show(NumberString.ToString());
+
+            Result = Task.WhenAll(WriteToDatabaseAsync(), WriteToFileAsync());
+            await Result;
+            if (Result.Status == TaskStatus.RanToCompletion)
+            {
+                MessageBox.Show("Успешно записано в файл и в базу данных");
+            }
+            else if (Result.Status == TaskStatus.Faulted)
+            {
+                MessageBox.Show("Ошибка записи в файл или в базу данных");
+            }
         }
     }
 }
