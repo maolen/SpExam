@@ -71,7 +71,7 @@ namespace SpExam
         private void StartCount(object sender, RoutedEventArgs e)
         {
             startButton.IsEnabled = false;
-            Parallel.For(0, END_INTERVAL, index => NumberString.Append($"{index.ToString()} "));
+            Parallel.For(0, END_INTERVAL, index => NumberString.Append($"Дата создания - {DateTime.Now}\n{index.ToString()} "));
             MessageBox.Show(NumberString.ToString());
         }
     }
