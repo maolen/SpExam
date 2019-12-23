@@ -35,9 +35,8 @@ namespace SpExam
             var fileName = $"{DateTime.Now.ToString("ddMMyyyy-hhmmss")}.txt";
             using (var outputFile = new StreamWriter(System.IO.Path.Combine(savePath, fileName)))
             {
-                await outputFile.WriteAsync(NumberString.ToString());
+                await outputFile.WriteAsync($"Дата создания - {DateTime.Now}\n{NumberString.ToString()}");
             }
-
         }
 
         private async Task WriteToDatabaseAsync()
@@ -52,7 +51,7 @@ namespace SpExam
         private async void StartCount(object sender, RoutedEventArgs e)
         {
             startButton.IsEnabled = false;
-            Parallel.For(0, END_INTERVAL, index => NumberString.Append($"Дата создания - {DateTime.Now}\n{index.ToString()} "));
+            Parallel.For(0, END_INTERVAL, index => NumberString.Append($"{index.ToString()} "));
             MessageBox.Show(NumberString.ToString());
 
             Result = Task.WhenAll(WriteToDatabaseAsync(), WriteToFileAsync());

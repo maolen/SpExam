@@ -15,7 +15,7 @@ namespace SpExam
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer("Server=A-104-14;Database=FarmersMarket;Trusted_Connection=True;");
+            optionsBuilder.UseSqlServer("Server=A-104-14;Database=NumberDb;Trusted_Connection=True;");
         }
     }
 }
