@@ -48,13 +48,30 @@ namespace SpExam
             }
         }
 
-        private async void StartCount(object sender, RoutedEventArgs e)
+        private async Task ProcessWriting()
+        {
+            var result = Task.WhenAll(WriteToDatabaseAsync(), WriteToFileAsync());
+            try
+            {
+                await result;
+            }
+            catch
+            {
+                MessageBox.Show("Ошибка записи в файл или в базу данных");
+            }
+            if (result.Status == TaskStatus.RanToCompletion)
+            {
+                MessageBox.Show("Успешно записано в файл и в базу данных");
+            }
+            else if (result.Status == TaskStatus.Faulted)
+            {
+                MessageBox.Show("Ошибка записи в файл или в базу данных");
+            }
+        }
+        private void StartCount(object sender, RoutedEventArgs e)
         {
             startButton.IsEnabled = false;
-            progressBar.IsIndeterminate = true;
             Parallel.For(0, END_INTERVAL, index => NumberString.Append($"{index.ToString()} "));
-            await Task.WhenAll(WriteToDatabaseAsync(), WriteToFileAsync());
-            progressBar.IsIndeterminate = false;
             MessageBox.Show(NumberString.ToString());
         }
     }
